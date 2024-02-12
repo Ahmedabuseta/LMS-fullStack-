@@ -17,6 +17,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { error } from "console";
 const formSchema = z.object({
   title: z.string().min(1,{
     message:"Title is required"})
@@ -33,15 +34,27 @@ const CreateCoursePage = ({}:iProps) => {
     title:""
   },
 })
+
 const { isSubmitting ,isValid}  = form.formState;
-const onSubmit= async (values:z.infer<typeof formSchema>) => {
-  try{
-    const response = await axios.post('/api/courses',values);
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  try {
+
+    const response = await axios.post('/api/courses', values);
+
+    // Assuming `response.data.id` is available
     router.push(`/teacher/courses/${response.data.id}`);
-  }catch{
-    toast.error('Failed to create course')
+    
+    // Display a success toast
+    toast.success('Course created successfully');
+  } catch (error) {
+    // Extract specific error information for a more informative toast message
+    const errorMessage = 'Failed to create course';
+
+    // Display an error toast
+    toast.error(errorMessage);
   }
-}
+};
+
 return(
 <div className="max-w-5xl flex flex-col md:items-center md:justify-center p-6 h-full  mx-auto">
   <h1 className="text-2xl">

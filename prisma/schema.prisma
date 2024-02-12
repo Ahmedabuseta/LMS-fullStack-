@@ -13,3 +13,37 @@ datasource db {
   directUrl = env("DIRECT_URL")
   relationMode = "prisma"
 }
+model Attachment {
+  id String @id @default(uuid())
+  name String
+  url String 
+  courseId String
+  course Course @relation(fields: [courseId], references: [id] ,onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([courseId])
+}
+model Categoery{
+  id String @id @default(uuid())
+  name String @unique
+  courses Course[]
+}
+model Course {
+  id String @id @default(uuid())
+  userId String
+  title String @db.Text
+  description String? @db.Text
+  imageUrl String? @db.Text
+  price Float?
+  isPublished Boolean @default(false)
+  categoeryId String?
+  categoery Categoery? @relation(fields: [categoeryId], references: [id])
+  @@index([categoeryId])
+  attachments Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+}
